@@ -49,6 +49,8 @@ export type {
   PostedRankCheckTask,
 } from "@/server/lib/dataforseo/serp";
 
+export type { BaiduRankCheckResult } from "@/server/lib/dataforseo/baidu";
+
 export type {
   BacklinksSummaryItem,
   BacklinksItem,

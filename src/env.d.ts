@@ -39,6 +39,10 @@ declare namespace Cloudflare {
 
     // DataForSEO API Basic auth value (base64 of login:password)
     DATAFORSEO_API_KEY: string;
+    BAIDU_SEARCH_SITE?: string;
+    BAIDU_SEARCH_TOKEN?: string;
+    GEOFLOW_EVIDENCE_EXPORT_URL?: string;
+    GEOFLOW_EVIDENCE_EXPORT_SECRET?: string;
 
     // OpenRouter API key for the in-app chat agents (onboarding + SAM).
     OPENROUTER_API_KEY?: string;

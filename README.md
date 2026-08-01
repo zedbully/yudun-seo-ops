@@ -1,5 +1,16 @@
 # OpenSEO
 
+## 御盾 SEO Operations Fork
+
+本分支新增项目级“中国搜索运营台”，域名和服务器可在部署阶段再配置：
+
+- 使用 DataForSEO 的百度自然搜索接口检查中国大陆、简体中文、移动端或桌面端 Top 100 排名，并保存上游任务号和响应 SHA-256。
+- 通过百度搜索资源平台主动推送 URL，限制为当前项目域名，并保存接收、拒绝或网络错误回执。推送成功只代表百度收到发现信号，不代表收录或排名。
+- 从独立 GEO 系统读取 `yudun.geo.evidence.v1` 回执摘要，用于选题研究；该接口只读，不会把 GEO 内容混入 SEO 正文，也不会自动发布。
+- SQLite/D1 与 PostgreSQL 使用同构的规范化表结构，相关变量见 `.env.example`。
+
+正式启用前仍需填写项目域名，以及 `BAIDU_SEARCH_SITE`、`BAIDU_SEARCH_TOKEN`；两套系统对接时再填写 `GEOFLOW_EVIDENCE_EXPORT_URL` 与独立密钥。
+
 > Open source alternative to Semrush and Ahrefs
 
 OpenSEO is an SEO tool for _the people_. If tools like Semrush or Ahrefs are too expensive or bloated, OpenSEO is a pay-as-you-go alternative that you actually control.

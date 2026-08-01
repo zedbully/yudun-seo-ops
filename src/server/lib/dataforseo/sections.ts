@@ -43,6 +43,8 @@ export {
   postRankCheckTasks,
 } from "@/server/lib/dataforseo/serp";
 
+export { fetchBaiduRankCheck } from "@/server/lib/dataforseo/baidu";
+
 export { fetchLighthouseResult } from "@/server/lib/dataforseo/lighthouse";
 
 export {

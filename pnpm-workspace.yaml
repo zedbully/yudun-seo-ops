@@ -47,3 +47,16 @@ overrides:
   smol-toml: "^1.6.1"
   # 7 advisories incl. GHSA-vmh5-mc38-953g — waiting on cheerio + miniflare
   undici: "^7.28.0"
+
+allowBuilds:
+  # Native/runtime dependencies required by the self-hosted build.
+  "@mongodb-js/zstd": true
+  esbuild: true
+  msgpackr-extract: true
+  node-liblzma: true
+  sharp: true
+  workerd: true
+  # These postinstall scripts only print funding/update messages; the runtime
+  # packages work without executing them.
+  core-js: false
+  core-js-pure: false

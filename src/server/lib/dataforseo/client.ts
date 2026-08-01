@@ -97,6 +97,11 @@ export function createDataforseoClient(customer: BillingCustomerContext) {
     serp: {
       live: meter(customer, (s) => s.fetchLiveSerp),
       rankCheck: meter(customer, (s) => s.fetchRankCheckSerp, "rank_tracking"),
+      baiduRankCheck: meter(
+        customer,
+        (s) => s.fetchBaiduRankCheck,
+        "rank_tracking",
+      ),
       // Posts up to 100 queued rank check tasks; one metered charge covers the
       // whole batch (DataForSEO bills task_post at post time, collection is
       // free).

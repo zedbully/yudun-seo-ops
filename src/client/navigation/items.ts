@@ -7,6 +7,7 @@ import {
   Link2,
   MessageSquare,
   Search,
+  SearchCheck,
   Sparkles,
   TrendingUp,
 } from "lucide-react";
@@ -36,6 +37,11 @@ const projectNavItems = [
     to: "/p/$projectId/rank-tracking" as const,
     label: "Rank Tracking",
     icon: TrendingUp,
+  },
+  {
+    to: "/p/$projectId/china-seo" as const,
+    label: "China SEO Ops",
+    icon: SearchCheck,
   },
   {
     to: "/p/$projectId/search-performance" as const,
@@ -118,6 +124,7 @@ export function getProjectNavGroups(projectId: string) {
       items: [
         byPath("/p/$projectId/search-performance"),
         byPath("/p/$projectId/rank-tracking"),
+        byPath("/p/$projectId/china-seo"),
         byPath("/p/$projectId/saved"),
         byPath("/p/$projectId/audit"),
       ],

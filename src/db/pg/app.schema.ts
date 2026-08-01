@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- canonical PostgreSQL schema mirrors the SQLite table set for parity checks. */
 import { sql } from "drizzle-orm";
 import {
   boolean,
@@ -340,6 +341,114 @@ export const rankSnapshots = pgTable(
       table.runId,
       table.trackingKeywordId,
       table.device,
+    ),
+  ],
+);
+
+// ============================================================================
+// Yudun China SEO operations
+// ============================================================================
+
+export const chinaSeoRankChecks = pgTable(
+  "china_seo_rank_checks",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    keyword: text("keyword").notNull(),
+    targetDomain: text("target_domain").notNull(),
+    locationCode: integer("location_code").notNull().default(2156),
+    languageCode: text("language_code").notNull().default("zh_CN"),
+    device: text("device", { enum: ["desktop", "mobile"] }).notNull(),
+    position: integer("position"),
+    rankingUrl: text("ranking_url"),
+    serpFeatures: text("serp_features"),
+    upstreamTaskId: text("upstream_task_id"),
+    responseSha256: text("response_sha256").notNull(),
+    checkedAt: timestampColumn("checked_at").notNull().default(isoNow),
+  },
+  (table) => [
+    index("china_seo_rank_checks_project_checked_idx").on(
+      table.projectId,
+      table.checkedAt,
+    ),
+    index("china_seo_rank_checks_keyword_idx").on(
+      table.projectId,
+      table.keyword,
+      table.checkedAt,
+    ),
+  ],
+);
+
+export const baiduSubmissionBatches = pgTable(
+  "baidu_submission_batches",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    site: text("site").notNull(),
+    status: text("status", {
+      enum: ["accepted", "rejected", "error"],
+    }).notNull(),
+    remaining: integer("remaining"),
+    succeeded: integer("succeeded").notNull().default(0),
+    responseSha256: text("response_sha256").notNull(),
+    errorMessage: text("error_message"),
+    submittedAt: timestampColumn("submitted_at").notNull().default(isoNow),
+  },
+  (table) => [
+    index("baidu_submission_batches_project_submitted_idx").on(
+      table.projectId,
+      table.submittedAt,
+    ),
+  ],
+);
+
+export const baiduSubmissionUrls = pgTable(
+  "baidu_submission_urls",
+  {
+    id: text("id").primaryKey(),
+    batchId: text("batch_id")
+      .notNull()
+      .references(() => baiduSubmissionBatches.id, { onDelete: "cascade" }),
+    url: text("url").notNull(),
+  },
+  (table) => [
+    uniqueIndex("baidu_submission_urls_batch_url_idx").on(
+      table.batchId,
+      table.url,
+    ),
+  ],
+);
+
+export const geoEvidenceImports = pgTable(
+  "geo_evidence_imports",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    evidenceId: text("evidence_id").notNull(),
+    provider: text("provider").notNull(),
+    evidenceClass: text("evidence_class").notNull(),
+    channel: text("channel").notNull(),
+    prompt: text("prompt").notNull(),
+    answer: text("answer").notNull(),
+    sourceCount: integer("source_count").notNull().default(0),
+    contentSha256: text("content_sha256").notNull(),
+    capturedAt: timestampColumn("captured_at").notNull(),
+    importedAt: timestampColumn("imported_at").notNull().default(isoNow),
+  },
+  (table) => [
+    uniqueIndex("geo_evidence_imports_project_evidence_idx").on(
+      table.projectId,
+      table.evidenceId,
+    ),
+    index("geo_evidence_imports_project_captured_idx").on(
+      table.projectId,
+      table.capturedAt,
     ),
   ],
 );
