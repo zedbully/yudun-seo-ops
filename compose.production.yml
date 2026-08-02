@@ -11,6 +11,7 @@ services:
     environment:
       CLOUDFLARE_INCLUDE_PROCESS_ENV: "true"
       PORT: "3001"
+      ALLOWED_HOST: yudun-seo-ops
       AUTH_MODE: local_noauth
       OPENSEO_TELEMETRY_DISABLED: "1"
       VITE_SHOW_DEVTOOLS: "false"
