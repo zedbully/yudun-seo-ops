@@ -40,4 +40,6 @@ export const submitBaiduUrls = createServerFn({ method: "POST" })
 export const syncGeoEvidence = createServerFn({ method: "POST" })
   .middleware(requireProjectContext)
   .validator(syncGeoEvidenceSchema)
-  .handler(({ context }) => ChinaSeoService.syncGeoEvidence(context.projectId));
+  .handler(({ context }) =>
+    ChinaSeoService.syncGeoEvidence(context.projectId, context.project.domain),
+  );

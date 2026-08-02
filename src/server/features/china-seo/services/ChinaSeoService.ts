@@ -189,6 +189,7 @@ const geoReceiptSchema = z.object({
   prompt: z.string(),
   answer: z.string(),
   sources: z.array(z.string()),
+  site_domain: z.string().nullable().optional(),
   content_sha256: z.string().length(64),
   captured_at: z.string(),
 });
@@ -196,10 +197,20 @@ const geoReceiptSchema = z.object({
 const geoExportSchema = z.object({
   schema: z.literal("yudun.geo.evidence.v1"),
   readOnly: z.literal(true),
-  receipts: z.array(geoReceiptSchema).max(100),
+  receipts: z.array(geoReceiptSchema).max(500),
 });
 
-async function syncGeoEvidence(projectId: string) {
+async function syncGeoEvidence(
+  projectId: string,
+  projectDomain: string | null,
+) {
+  if (!projectDomain) {
+    throw new AppError(
+      "VALIDATION_ERROR",
+      "Set the project domain before importing GEO evidence.",
+    );
+  }
+  const normalizedDomain = projectDomain.toLowerCase();
   const exportUrl = await getRequiredEnvValue("GEOFLOW_EVIDENCE_EXPORT_URL");
   const secret = await getRequiredEnvValue("GEOFLOW_EVIDENCE_EXPORT_SECRET");
   const response = await fetch(exportUrl, {
@@ -216,19 +227,23 @@ async function syncGeoEvidence(projectId: string) {
   if (!parsed.success) {
     throw new AppError("INTERNAL_ERROR", "Invalid GEO evidence export payload");
   }
-  const rows = parsed.data.receipts.map((receipt) => ({
-    id: crypto.randomUUID(),
-    projectId,
-    evidenceId: receipt.id,
-    provider: receipt.provider,
-    evidenceClass: receipt.evidence_class,
-    channel: receipt.channel,
-    prompt: receipt.prompt,
-    answer: receipt.answer,
-    sourceCount: receipt.sources.length,
-    contentSha256: receipt.content_sha256,
-    capturedAt: receipt.captured_at,
-  }));
+  const rows = parsed.data.receipts
+    .filter(
+      (receipt) => receipt.site_domain?.toLowerCase() === normalizedDomain,
+    )
+    .map((receipt) => ({
+      id: crypto.randomUUID(),
+      projectId,
+      evidenceId: receipt.id,
+      provider: receipt.provider,
+      evidenceClass: receipt.evidence_class,
+      channel: receipt.channel,
+      prompt: receipt.prompt,
+      answer: receipt.answer,
+      sourceCount: receipt.sources.length,
+      contentSha256: receipt.content_sha256,
+      capturedAt: receipt.captured_at,
+    }));
   const added = await ChinaSeoRepository.importGeoEvidence(rows);
   return { received: rows.length, added };
 }

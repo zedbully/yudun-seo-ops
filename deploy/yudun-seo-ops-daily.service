@@ -1,0 +1,13 @@
+[Unit]
+Description=Run daily Yudun SEO operations
+After=docker.service network-online.target yudun-geo-intelligence-daily.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/yudun-seo-ops/deploy/run-daily.sh
+TimeoutStartSec=1850
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

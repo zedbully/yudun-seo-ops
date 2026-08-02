@@ -15,6 +15,10 @@ pnpm exec tsx scripts/selfhost-preflight.ts
 
 pnpm run db:migrate:local
 
+if [ "${YUDUN_SIX_SITES_ENABLED:-}" = "true" ]; then
+  pnpm run seed:yudun-six-sites
+fi
+
 # POSTHOG_SOURCEMAPS (CI sourcemap uploads) moves vite's outDir; keep the
 # fingerprint marker beside the output it describes.
 if [ "${POSTHOG_SOURCEMAPS:-}" = "true" ]; then OUT_DIR=dist-sourcemaps; else OUT_DIR=dist; fi

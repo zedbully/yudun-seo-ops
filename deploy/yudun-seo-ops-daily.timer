@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Yudun SEO operations timer
+
+[Timer]
+OnCalendar=*-*-* 02:10:00 UTC
+RandomizedDelaySec=900
+Persistent=true
+Unit=yudun-seo-ops-daily.service
+
+[Install]
+WantedBy=timers.target

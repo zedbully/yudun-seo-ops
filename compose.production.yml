@@ -1,0 +1,28 @@
+services:
+  yudun-seo-ops:
+    container_name: yudun-seo-ops
+    build:
+      context: .
+      dockerfile: Dockerfile.selfhost
+    image: yudun-seo-ops:production
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      CLOUDFLARE_INCLUDE_PROCESS_ENV: "true"
+      PORT: "3001"
+      AUTH_MODE: local_noauth
+      OPENSEO_TELEMETRY_DISABLED: "1"
+      VITE_SHOW_DEVTOOLS: "false"
+      YUDUN_SIX_SITES_ENABLED: "true"
+    ports:
+      - "127.0.0.1:18101:3001"
+    volumes:
+      - ./data:/app/.wrangler
+    networks:
+      - geoflow_internal
+
+networks:
+  geoflow_internal:
+    external: true
+    name: geoflow-laravel-prod_default
